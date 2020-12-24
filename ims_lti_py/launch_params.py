@@ -1,4 +1,12 @@
 from collections import defaultdict
+import sys
+
+py   = sys.version_info
+if py <  (2, 6, 0): bytes=str
+
+def touni(s, enc='utf8', err='strict'):
+    return s.decode(enc, err) if isinstance(s, bytes) else unicode(s)
+
 
 # List of the standard launch parameters for an LTI launch
 LAUNCH_DATA_PARAMETERS = [
@@ -65,7 +73,7 @@ class LaunchParamsMixin(object):
         Set the roles for the current launch.
 
         Full list of roles can be found here:
-        http://www.imsglobal.org/LTI/v1p1pd/ltiIMGv1p1pd.html#_Toc309649700
+        http://www.imsglobal.org/LTI/v1p1/ltiIMGv1p1.html#_Toc319560479
 
         LIS roles include:
         * Student
@@ -104,11 +112,11 @@ class LaunchParamsMixin(object):
                         # If it's a ',' delimited string, split
                         self.roles = val.split(',')
                 else:
-                    setattr(self, key, unicode(val))
+                    setattr(self, key, touni(val))
             elif 'custom_' in key:
-                self.custom_params[key] = unicode(val)
+                self.custom_params[key] = touni(val)
             elif 'ext_' in key:
-                self.ext_params[key] = unicode(val)
+                self.ext_params[key] = touni(val)
 
     def set_custom_param(self, key, val):
         self.custom_params['custom_' + key] = val
